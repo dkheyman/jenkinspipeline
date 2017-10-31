@@ -32,13 +32,15 @@ stages{
             parallel{
                 stage ('Deploy to Staging'){
                     steps {
-                        sh "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /Users/Shared/Jenkins/Home/david-docker.pem **/target/*.war ec2-user@${params.tomcat_dev}:/var/lib/tomcat7/webapps"
+                        sh "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /Users/Shared/Jenkins/Home/david-docker.pem **/target/*.war ec2-user@${params.tomcat_dev}:/tmp/"
+                        sh "cat init.sh | ssh ec2-user@${params.tomcat_dev} -i /Users/Shared/Jenkins/Home/david-docker.pem 'bash -ex' "
                     }
                 }
 
                 stage ("Deploy to Production"){
                     steps {
-                        sh "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /Users/Shared/Jenkins/Home/david-docker.pem **/target/*.war ec2-user@${params.tomcat_prod}:/var/lib/tomcat7/webapps"
+                        sh "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /Users/Shared/Jenkins/Home/david-docker.pem **/target/*.war ec2-user@${params.tomcat_prod}:/tmp"
+                        sh "cat init.sh | ssh ec2-user@${params.tomcat_dev} -i /Users/Shared/Jenkins/Home/david-docker.pem 'bash -ex' "
                     }
                 }
             }
