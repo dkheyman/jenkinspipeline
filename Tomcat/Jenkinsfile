@@ -13,6 +13,7 @@ pipeline {
 stages{
         stage('Build'){
             steps {
+                sh 'service docker restart'
                 sh 'docker build Tomcat -t dkheyman/trial-repo'
                 sh 'docker push dkheyman/trial-repo'
             }
