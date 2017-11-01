@@ -4,6 +4,7 @@ pipeline {
     tools {
       maven 'localMaven'
       git 'localGit'
+      docker 'localDocker'
     }
 
     parameters {
@@ -18,12 +19,12 @@ pipeline {
 stages{
         stage('Build'){
             steps {
-                sh 'mvn clean package'
+                sh 'docker build Tomcat -t dkheyman/trial-repo'
+                sh 'docker push dkheyman/trial-repo'
             }
             post {
                 success {
-                    echo 'Now Archiving...'
-                    archiveArtifacts artifacts: '**/target/*.war'
+                    echo 'Successfully built docker image'
                 }
             }
         }
@@ -38,7 +39,7 @@ stages{
 
                 stage ("Deploy to Production"){
                     steps {
-                        sh "cat init.sh | ssh ec2-user@${params.tomcat_prod} -i /Users/Shared/Jenkins/Home/david-docker.pem 'bash -ex' "
+                        sh "cat init.sh | ssh ec2-user@${params.tomcat_dev} -i /Users/Shared/Jenkins/Home/david-docker.pem 'bash -ex' "
                     }
                 }
             }
