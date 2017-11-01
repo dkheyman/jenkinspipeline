@@ -19,7 +19,7 @@ stages{
         stage('Build'){
             steps {
                 sh 'tree'
-                sh 'docker build Tomcat -t dkheyman/trial-repo'
+                sh 'docker build -t dkheyman/trial-repo'
                 sh 'docker push dkheyman/trial-repo'
             }
             post {
