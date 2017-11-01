@@ -11,6 +11,11 @@ pipeline {
      }
 
 stages{
+        stage('Maven Build'){
+            steps {
+              sh 'mvn clean package'
+            }
+        }
         stage('Build'){
             steps {
                 sh 'docker build Tomcat -t dkheyman/trial-repo'
