@@ -4,6 +4,6 @@ MAINTAINER David Kheyman <david.kheyman@cloudreach.com>
 ENV INSTALL_PATH /usr/local/tomcat
 RUN mkdir -p $INSTALL_PATH/webapps
 WORKDIR $INSTALL_PATH/webapps
-COPY ./webapp/target/*.war .
+COPY ./webapp/target/webapp.war .
 
 VOLUME $INSTALL_PATH
