@@ -1,4 +1,3 @@
 sudo su
-rsync /tmp/*.war /var/lib/tomcat7/webapps/
-chown tomcat /var/lib/tomcat7/webapps /var/lib/tomcat7/webapps/*.war
-chgrp tomcat /var/lib/tomcat7/webapps /var/lib/tomcat7/webapps/*.war
+docker pull dkheyman/trial-repo
+docker run -p 8080:8080 dkheyman/trial-repo
