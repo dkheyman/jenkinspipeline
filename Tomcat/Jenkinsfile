@@ -13,8 +13,8 @@ pipeline {
 stages{
         stage('Build'){
             steps {
-                sh 'docker build Tomcat -t dkheyman/trial-repo'
-                sh 'docker push dkheyman/trial-repo'
+                sh 'sudo docker build Tomcat -t dkheyman/trial-repo'
+                sh 'sudo docker push dkheyman/trial-repo'
             }
             post {
                 success {
