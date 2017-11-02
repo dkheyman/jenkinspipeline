@@ -17,28 +17,49 @@ stages{
             }
         }
         stage('Build'){
-            steps {
-                sh 'tree'
-                sh 'docker build . -t dkheyman/trial-repo'
-                sh 'docker push dkheyman/trial-repo'
+          parallel {
+            stage ('Building Development') {
+              steps {
+                  sh 'tree'
+                  sh 'export GIT_TAG=`git log -1 --pretty=%h`'
+                  sh 'echo ${env.GIT_TAG}'
+                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:dev'
+                  sh 'docker push dkheyman/trial-repo'
+              }
+              post {
+                  success {
+                      echo 'Successfully built docker dev image'
+                  }
+              }
             }
-            post {
-                success {
-                    echo 'Successfully built docker image'
-                }
+            stage ('Building Production') {
+              steps {
+                  sh 'export GIT_TAG=`git log -1 --pretty=%h`'
+                  sh 'echo ${env.GIT_TAG}'
+                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:prod'
+                  sh 'docker push dkheyman/trial-repo'
+              }
+              post {
+                  success {
+                      echo 'Successfully built docker prod image'
+                  }
+              }
             }
+          }
         }
 
         stage ('Deployments'){
             parallel{
-                stage ('Deploy to Staging'){
+                stage ('Deploy to Development'){
                     steps {
+                        sh "export BUILD_ENV=dev"
                         sh "cat init.sh | ssh ec2-user@20.0.3.28 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
                     }
                 }
 
                 stage ("Deploy to Production"){
                     steps {
+                        sh "export BUILD_ENV=prod"
                         sh "cat init.sh | ssh ec2-user@20.0.3.15 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
                     }
                 }
