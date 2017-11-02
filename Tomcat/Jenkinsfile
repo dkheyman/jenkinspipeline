@@ -21,7 +21,7 @@ stages{
             stage ('Building Development') {
               steps {
                   sh 'tree'
-                  GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
+                  GIT_TAG = sh 'git log -1 --pretty=%h'
                   echo "${GIT_TAG}"
                   sh 'docker build . -t dkheyman/trial-repo:${GIT_TAG} -t dkheyman/trial-repo:dev}'
                   sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
