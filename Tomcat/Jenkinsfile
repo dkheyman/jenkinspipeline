@@ -21,12 +21,12 @@ stages{
             stage ('Building Development') {
               environment {
                 ENV = 'dev'
+                GIT_TAG = sh 'git log -1 --pretty=%h'
               }
               steps {
                   sh 'tree'
-                  echo "${CHANGE_ID}"
-                  sh 'docker build . -t dkheyman/trial-repo:${CHANGE_ID} -t dkheyman/trial-repo:${env.ENV}}'
-                  sh 'docker push dkheyman/trial-repo:${env.CHANGE_ID}'
+                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:${env.ENV}}'
+                  sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
               }
               post {
                   success {
@@ -37,12 +37,11 @@ stages{
             stage ('Building Production') {
               environment {
                 ENV = 'prod'
+                GIT_TAG = sh 'git log -1 --pretty=%h'
               }
               steps {
-                  sh 'export GIT_TAG=`git log -1 --pretty=%h`'
-                  echo  "${GIT_TAG}"
-                  sh 'docker build . -t dkheyman/trial-repo:${env.CHANGE_ID} -t dkheyman/trial-repo:${env.ENV}'
-                  sh 'docker push dkheyman/trial-repo:${env.CHANGE_ID}'
+                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:${env.ENV}'
+                  sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
               }
               post {
                   success {
