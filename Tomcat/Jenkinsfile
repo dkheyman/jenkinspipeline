@@ -25,6 +25,7 @@ stages{
               }
               steps {
                   sh 'tree'
+                  echo env.GIT_TAG
                   sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:${env.ENV}}'
                   sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
               }
@@ -40,6 +41,7 @@ stages{
                 GIT_TAG = sh 'git log -1 --pretty=%h'
               }
               steps {
+                  echo env.GIT_TAG
                   sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:${env.ENV}'
                   sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
               }
