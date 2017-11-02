@@ -24,7 +24,7 @@ stages{
               }
               steps {
                   sh 'tree'
-                  sh 'echo ${env.CHANGE_ID}'
+                  echo "${env.CHANGE_ID}"
                   sh 'docker build . -t dkheyman/trial-repo:${env.CHANGE_ID} -t dkheyman/trial-repo:${env.ENV}}'
                   sh 'docker push dkheyman/trial-repo:${env.CHANGE_ID}'
               }
@@ -40,7 +40,7 @@ stages{
               }
               steps {
                   sh 'export GIT_TAG=`git log -1 --pretty=%h`'
-                  sh 'echo ${env.CHANGE_ID}'
+                  echo  "${env.CHANGE_ID}"
                   sh 'docker build . -t dkheyman/trial-repo:${env.CHANGE_ID} -t dkheyman/trial-repo:${env.ENV}'
                   sh 'docker push dkheyman/trial-repo:${env.CHANGE_ID}'
               }
