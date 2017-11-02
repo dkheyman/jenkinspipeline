@@ -23,7 +23,7 @@ stages{
                   sh 'tree'
                   env.GIT_TAG = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
                   echo env.GIT_TAG
-                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:dev}'
+                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:dev'
                   sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
               }
               post {
