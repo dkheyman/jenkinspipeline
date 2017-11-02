@@ -25,6 +25,7 @@ pipeline {
           }
           steps {
             sh 'tree'
+            sh 'sudo service docker status'
             sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
             sh 'docker push dkheyman/trial-repo:$GIT_TAG'
             sh 'docker push dkheyman/trial-repo:$ENV'
@@ -61,7 +62,7 @@ pipeline {
             sh "cat init.sh | ssh ec2-user@20.0.3.28 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
           }
         }
-        
+
         stage ("Deploy to Production"){
           steps {
             sh "cat init.sh | ssh ec2-user@20.0.3.15 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
