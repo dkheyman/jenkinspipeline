@@ -57,20 +57,13 @@ stages{
         stage ('Deployments'){
             parallel{
                 stage ('Deploy to Development'){
-                  environment {
-                    BUILD_ENV = 'dev'
-                  }
                     steps {
                         sh "cat init.sh | ssh ec2-user@20.0.3.200 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
                     }
                 }
-
-                stage ("Deploy to Production"){
-                  environment {
-                    BUILD_ENV = 'prod'
-                  }
+                stage ("Deploy to Production"){                
                     steps {
-                        sh "cat init.sh | ssh ec2-user@20.0.3.128 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
+                        sh 'cat init.sh | ssh ec2-user@20.0.3.128 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' '
                     }
                 }
             }
