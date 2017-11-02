@@ -43,7 +43,7 @@ stages{
               steps {
                   sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
                   sh 'docker push dkheyman/trial-repo:$GIT_TAG'
-                  sh 'docker push dkheyman/trial-repo:$ENV'
+                  sh 'docker push dkheyman/trial-repo:$GIT_TAG'
               }
               post {
                   success {
@@ -57,13 +57,21 @@ stages{
         stage ('Deployments'){
             parallel{
                 stage ('Deploy to Development'){
+                  environment {
+                    BUILD_ENV = 'dev'
+                  }
                     steps {
-                        sh "cat init.sh | ssh ec2-user@20.0.3.200 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
+                        sh "cat init.sh | ssh ec2-user@20.0.3.28 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
                     }
                 }
-                stage ("Deploy to Production"){                
+
+                stage ("Deploy to Production"){
+                  environment {
+                    BUILD_ENV = 'prod'
+                  }
                     steps {
-                        sh 'cat init.sh | ssh ec2-user@20.0.3.128 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' '
+                        sh "export BUILD_ENV=prod"
+                        sh "cat init.sh | ssh ec2-user@20.0.3.15 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
                     }
                 }
             }
