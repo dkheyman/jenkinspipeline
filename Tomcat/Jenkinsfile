@@ -18,11 +18,14 @@ stages{
         }
         stage('Build'){
           parallel {
+            environment {
+              GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
+            }
             stage ('Building Development') {
               steps {
                   sh 'tree'
-                  sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:dev'
-                  sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
+                  sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:dev'
+                  sh 'docker push dkheyman/trial-repo:$GIT_TAG'
               }
               post {
                   success {
@@ -33,10 +36,10 @@ stages{
             stage ('Building Production') {
               environment {
                 ENV = 'prod'
-                GIT_TAG = sh 'git log -1 --pretty=%h'
+                GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
               }
               steps {
-                  echo env.GIT_TAG
+                  echo  "${env}"
                   sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:prod'
                   sh 'docker push dkheyman/trial-repo:${env.GIT_TAG}'
               }
