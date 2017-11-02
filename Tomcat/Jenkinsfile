@@ -25,7 +25,7 @@ stages{
               steps {
                   sh 'tree'
                   sh 'export GIT_TAG=`git log -1 --pretty=%h`'
-                  sh 'echo ${GIT_TAG}'
+                  sh 'echo $GIT_TAG'
                   sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:${env.ENV}}'
                   sh 'docker push dkheyman/trial-repo'
               }
@@ -41,7 +41,7 @@ stages{
               }
               steps {
                   sh 'export GIT_TAG=`git log -1 --pretty=%h`'
-                  sh 'echo ${GIT_TAG}'
+                  sh 'echo $GIT_TAG'
                   sh 'docker build . -t dkheyman/trial-repo:${env.GIT_TAG} -t dkheyman/trial-repo:${env.ENV}'
                   sh 'docker push dkheyman/trial-repo'
               }
