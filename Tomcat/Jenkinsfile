@@ -27,7 +27,7 @@ pipeline {
             sh 'tree'
             sh 'whoami'
             sh 'sudo service docker status'
-            sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
+            sh 'sudo docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
             sh 'docker push dkheyman/trial-repo:$GIT_TAG'
             sh 'docker push dkheyman/trial-repo:$ENV'
           }
