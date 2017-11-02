@@ -18,9 +18,7 @@ stages{
         }
         stage('Build'){
           parallel {
-            environment {
-              GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
-            }
+
             stage ('Building Development') {
               steps {
                   sh 'tree'
