@@ -26,10 +26,10 @@ pipeline {
           steps {
             sh 'tree'
             sh 'whoami'
-            sh 'sudo service docker status'
-            sh 'sudo docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
-            sh 'sudo docker push dkheyman/trial-repo:$GIT_TAG'
-            sh 'sudo docker push dkheyman/trial-repo:$ENV'
+            sh 'service docker status'
+            sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
+            sh 'docker push dkheyman/trial-repo:$GIT_TAG'
+            sh 'docker push dkheyman/trial-repo:$ENV'
           }
           post {
             success {
@@ -43,9 +43,9 @@ pipeline {
             GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
           }
           steps {
-            sh 'sudo docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
-            sh 'sudo docker push dkheyman/trial-repo:$GIT_TAG'
-            sh 'sudo docker push dkheyman/trial-repo:$GIT_TAG'
+            sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
+            sh 'docker push dkheyman/trial-repo:$GIT_TAG'
+            sh 'docker push dkheyman/trial-repo:$GIT_TAG'
           }
           post {
             success {
