@@ -1,47 +1,75 @@
 pipeline {
-    agent any
+  agent any
 
-    tools {
-      maven 'localMaven'
-      git 'localGit'
+  tools {
+    maven 'localMaven'
+    git 'localGit'
+  }
+
+  triggers {
+    pollSCM('* * * * *')
+  }
+
+  stages{
+    stage('Maven Build'){
+      steps {
+        sh 'mvn clean package'
+      }
+    }
+    stage('Build'){
+      parallel {
+        stage ('Building Development') {
+          environment {
+            ENV = 'dev'
+            GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
+          }
+          steps {
+            sh 'tree'
+            sh 'whoami'
+            sh 'systemctl status docker'
+            sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
+            sh 'docker push dkheyman/trial-repo:$GIT_TAG'
+            sh 'docker push dkheyman/trial-repo:$ENV'
+          }
+          post {
+            success {
+              echo 'Successfully built docker dev image'
+            }
+          }
+        }
+        stage ('Building Production') {
+          environment {
+            ENV = 'prod'
+            GIT_TAG = sh (script: 'git log -1 --pretty=%h', returnStdout: true)
+          }
+          steps {
+            sh 'docker build . -t dkheyman/trial-repo:$GIT_TAG -t dkheyman/trial-repo:$ENV'
+            sh 'docker push dkheyman/trial-repo:$GIT_TAG'
+            sh 'docker push dkheyman/trial-repo:$ENV'
+          }
+          post {
+            success {
+              echo 'Successfully built docker prod image'
+            }
+          }
+        }
+      }
     }
 
-    parameters {
-         string(name: 'tomcat_dev', defaultValue: '34.213.8.165', description: 'Staging Server')
-         string(name: 'tomcat_prod', defaultValue: '52.27.158.97', description: 'Production Server')
-    }
-
-    triggers {
-         pollSCM('* * * * *')
-     }
-
-stages{
-        stage('Build'){
-            steps {
-                sh 'mvn clean package'
-            }
-            post {
-                success {
-                    echo 'Now Archiving...'
-                    archiveArtifacts artifacts: '**/target/*.war'
-                }
-            }
+    stage ('Deployments'){
+      parallel{
+        stage ('Deploy to Development'){
+          steps {
+            sh "cat init.sh | ssh ec2-user@20.0.3.200 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
+          }
         }
 
-        stage ('Deployments'){
-            parallel{
-                stage ('Deploy to Staging'){
-                    steps {
-                        sh "cat init.sh | ssh ec2-user@${params.tomcat_dev} -i /Users/Shared/Jenkins/Home/david-docker.pem 'bash -ex' "
-                    }
-                }
-
-                stage ("Deploy to Production"){
-                    steps {
-                        sh "cat init.sh | ssh ec2-user@${params.tomcat_prod} -i /Users/Shared/Jenkins/Home/david-docker.pem 'bash -ex' "
-                    }
-                }
-            }
+        stage ("Deploy to Production"){
+          steps {
+            sh "cat init.sh | ssh ec2-user@20.0.3.128 -i /var/lib/jenkins/.ssh/ec2 'bash -ex' "
+          }
         }
+      }
     }
+  }
 }
